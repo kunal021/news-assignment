@@ -36,7 +36,7 @@ function Pagination({ page, setPage, currPage, setCurrPage }) {
           <button
             onClick={() => setCurrPage(item.num)}
             key={idx}
-            className={`h-10 sm:h-12 border-2 border-r-0 border-black
+            className={`h-10 sm:h-12 border-2 border-r-0 border-black hover:bg-black hover:text-white
                w-10 sm:w-12 ${currPage === item.num && "bg-black text-white"}`}
           >
             {item.num}

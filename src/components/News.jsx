@@ -5,13 +5,17 @@ import {
   fetchNewsSuccess,
   fetchNewsFailure,
 } from "../store/slice/news";
+import { fetchSaveSuccess } from "../store/slice/save";
 import Loader from "./Loader";
 import { Link } from "react-router-dom";
 import fetchNews from "../utils/fetchNews";
+import truncateData from "../utils/wordLimit";
+import NewsComponent from "./NewsComponent";
 
 function News({ currPage, category }) {
   const dispatch = useDispatch();
   const { news, loading, error } = useSelector((state) => state.news);
+  const { save } = useSelector((state) => state.save);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,44 +30,30 @@ function News({ currPage, category }) {
     fetchData();
   }, [currPage, dispatch, category]);
 
-  console.log(news);
+  const result = news.news;
 
-  if (loading) {
+  useEffect(() => {
+    localStorage.setItem("savedNews", JSON.stringify(save));
+  }, [save]);
+
+  const handleSave = (data) => {
+    const isDuplicate = save.some((el) => el.id === data.id);
+    if (!isDuplicate) {
+      const updatedSave = [...save, data];
+      dispatch(fetchSaveSuccess(updatedSave));
+    } else {
+      return;
+    }
+  };
+
+  if (loading || result === undefined) {
     return <Loader />;
   }
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  return (
-    <div className="flex flex-wrap justify-center items-center inset-0 gap-10 h-full">
-      {news.map((item, idx) => (
-        <div
-          key={idx}
-          className="flex flex-col w-72 justify-center items-center gap-4 border rounded-md border-black hover:shadow-md transition-all duration-300"
-        >
-          <img
-            src={item.urlToImage ? item.urlToImage : "image.png"}
-            alt={item.author}
-            className="h-44 w-72 object-cover rounded-t-md"
-          />
-          <div className="space-y-2 px-2">
-            <p className="text-lg font-bold leading-5 h-20">{item.title}</p>
-            <p className="text-sm h-32">
-              {item.description ? item.description : item.content}
-            </p>
-          </div>
-          <Link
-            to={item.url}
-            className="mb-4 px-5 py-2 text-center rounded-full bg-zinc-950 hover:bg-zinc-800 text-white transition-all duration-300"
-            target="_blank"
-          >
-            Read More
-          </Link>
-        </div>
-      ))}
-    </div>
-  );
+  return <NewsComponent result={result} />;
 }
 
 export default News;

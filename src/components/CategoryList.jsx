@@ -13,6 +13,7 @@ function CategoryList({ setCategory, category }) {
 
   const handleSetCategory = (value) => {
     setCategory(value);
+    setCategoryOpen(false);
   };
 
   const categoryData = [
@@ -51,6 +52,31 @@ function CategoryList({ setCategory, category }) {
       name: "Technology",
       value: "technology",
     },
+    {
+      id: 7,
+      name: "Lifestyle",
+      value: "lifestyle",
+    },
+    {
+      id: 8,
+      name: "Programming",
+      value: "programming",
+    },
+    {
+      id: 9,
+      name: "World",
+      value: "world",
+    },
+    {
+      id: 10,
+      name: "Finance",
+      value: "finance",
+    },
+    {
+      id: 11,
+      name: "Politics",
+      value: "politics",
+    },
   ];
 
   return (
@@ -74,7 +100,7 @@ function CategoryList({ setCategory, category }) {
             <p
               key={item.id}
               onClick={() => handleSetCategory(item.value)}
-              className="cursor-pointer"
+              className="cursor-pointer hover:underline"
             >
               {item.name}
             </p>
