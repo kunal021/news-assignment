@@ -6,7 +6,7 @@ const fetchNews = async (currPage, category) => {
   try {
     let response;
     response = await axios.get(
-      `${baseUrl}?apiKey=${apiKey}&page_size=${10}&page_number=${currPage}&category=${category}`
+      `${baseUrl}?apiKey=${apiKey}&page_size=${2}&page_number=${currPage}&category=${category}`
     );
     console.log(response);
     return response.data;

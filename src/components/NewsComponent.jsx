@@ -1,31 +1,30 @@
 import { Link } from "react-router-dom";
 import truncateData from "../utils/wordLimit";
+import { Bookmark } from "lucide-react";
 import { useEffect, useState } from "react";
 
-function NewsComponent({ result }) {
-  const [saveData, setSaveData] = useState(() => {
-    const savedData = localStorage.getItem("savedNews");
-    return savedData ? JSON.parse(savedData) : [];
-  });
-
-  //   useEffect(() => {
-  //     const savedNews = JSON.parse(localStorage.getItem("savedNews"));
-  //     if (savedNews) {
-  //       setSaveData(savedNews);
-  //     }
-  //   }, []);
-
+function NewsComponent({
+  result,
+  handleSaveData = () => {},
+  handleDelete = () => {},
+}) {
+  const [data, setData] = useState([]);
   useEffect(() => {
-    localStorage.setItem("savedNews", JSON.stringify(saveData));
-  }, [saveData]);
-
-  const handleSave = (data) => {
-    const isDuplicate = saveData.some((el) => el.id === data.id);
-    if (!isDuplicate) {
-      setSaveData((prevData) => [...prevData, data]);
-    } else {
-      return;
+    const getData = JSON.parse(localStorage.getItem("news"));
+    if (getData) {
+      setData(getData);
     }
+  }, []);
+
+  const handleSave = (item) => {
+    const updatedData = data.some((dataItem) => dataItem.id === item.id)
+      ? data.filter((dataItem) => dataItem.id !== item.id)
+      : [...data, item];
+
+    setData(updatedData);
+    localStorage.setItem("news", JSON.stringify(updatedData));
+    handleSaveData(item);
+    handleDelete(item.id);
   };
   return (
     <div className="flex flex-wrap justify-center items-center inset-0 gap-10 h-full">
@@ -45,21 +44,24 @@ function NewsComponent({ result }) {
             <p className="text-lg font-bold leading-5 h-24">
               {truncateData(item.title, 30)}
             </p>
-            <p className="text-sm h-40">{truncateData(item.description, 50)}</p>
+            <p className="text-sm h-40 overflow-hidden">
+              {truncateData(item.description, 50)}
+            </p>
           </div>
           <div className="flex justify-between items-center w-full px-2 mb-4">
             <Link
               to={item.url}
-              className="px-5 py-2 text-center rounded-full bg-zinc-950 hover:bg-zinc-800 text-white transition-all duration-300"
+              className="px-5 pt-2 pb-[10px] text-center rounded-full bg-zinc-950 hover:bg-zinc-800 text-white transition-all duration-300"
               target="_blank"
             >
               Read More
             </Link>
-            <button
-              onClick={() => handleSave(item)}
-              className="px-5 py-2 text-center rounded-full bg-zinc-950 hover:bg-zinc-800 text-white transition-all duration-300"
-            >
-              Save
+            <button onClick={() => handleSave(item)}>
+              {data.find((data) => data.id === item.id) ? (
+                <Bookmark fill="#000000" />
+              ) : (
+                <Bookmark />
+              )}
             </button>
           </div>
         </div>
