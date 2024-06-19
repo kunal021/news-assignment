@@ -27,7 +27,7 @@ function NewsComponent({
     handleDelete(item.id);
   };
   return (
-    <div className="flex flex-wrap justify-center items-center inset-0 gap-10 h-full">
+    <div className="flex flex-wrap justify-center items-center inset-0 gap-10 h-full mx-2">
       {result.map((item, idx) => (
         <div
           key={idx}
